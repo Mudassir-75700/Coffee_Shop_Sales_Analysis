@@ -63,7 +63,24 @@ GROUP BY 1;
 -- 4. Compare the total revenue generated from 'Card' versus 'Cash' payments.
 SELECT cash_type, ROUND(SUM(money),2) Total_Revenue
 FROM coffee_sales
-GROUP BY 1;
+GROUP BY 1; -- 5 Which specific coffee name has the highest number of total orders?
+SELECT coffee_name,count(*) Total_Orders
+FROM coffee_sales
+GROUP BY 1
+ORDER By 2 DESC
+LIMIt 1;
+
+-- 6 Which time of the day (Morning, Afternoon, Night)  is the most profitable in term of revenue?
+SELECT time_of_day, ROUND(SUM(money),2) Total_Revenue
+FROM coffee_sales
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- 7 Calculate total number of orders received for each day of the week?
+SELECT weekday,COUNT(*) total_Order
+FROM coffee_sales
+GROUP BY 1
+ORDER BY DAY(2) ASC;
 
 
 
