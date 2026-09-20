@@ -51,6 +51,9 @@ MODIFY COLUMN Time TIME;
 SELECT ROUND(SUM(money),2) total_revenue
 FROM coffee_sales;
 
+<img width="522" height="197" alt="image" src="https://github.com/user-attachments/assets/2cde2187-b1bb-43d5-99b0-0a7b0895109c" />
+
+
 
 
 
