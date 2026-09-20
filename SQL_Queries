@@ -51,8 +51,19 @@ MODIFY COLUMN Time TIME;
 SELECT ROUND(SUM(money),2) total_revenue
 FROM coffee_sales;
 
-<img width="522" height="197" alt="image" src="https://github.com/user-attachments/assets/2cde2187-b1bb-43d5-99b0-0a7b0895109c" />
+-- 2. How many total coffee orders have been placed in the entire dataset?
+SELECT count(coffee_name) Total_Sold
+FROM coffee_sales;
 
+-- 3. List all the unique types of coffee sold in the shop.
+SELECT coffee_name,count(coffee_name) Total_sold
+FROM coffee_sales
+GROUP BY 1;
+
+-- 4. Compare the total revenue generated from 'Card' versus 'Cash' payments.
+SELECT cash_type, ROUND(SUM(money),2) Total_Revenue
+FROM coffee_sales
+GROUP BY 1;
 
 
 
