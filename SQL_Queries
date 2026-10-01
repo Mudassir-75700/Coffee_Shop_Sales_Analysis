@@ -82,6 +82,98 @@ FROM coffee_sales
 GROUP BY 1
 ORDER BY DAY(2) ASC;
 
+-- 8. During which hour of the day (hour_of_day) do the highest sales occur?
+
+SELECT hour_of_day,ROUND(SUM(money),2) Hourly_Revenue
+FROM coffee_sales
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- 9. Provide a monthly breakdown of total sales revenue.
+
+SELECT month_name,ROUND(SUM(money),2) Monthly_Revenue
+FROM coffee_sales
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- 10. Identify the top 5 individual dates that generated the highest revenue.
+
+SELECT date,ROUND(SUM(money),2) Daily_Revenu
+FROM coffee_sales
+GROUP BY 1;
+
+											-- Level Up --
+
+-- 11. For each 'Time_of_Day', find the top 2 best-selling coffees based on total revenue.
+
+WITH Revenue AS (
+SELECT coffee_name,time_of_day,ROUND(SUM(money),2) Total_Revenue
+FROM coffee_sales
+GROUP BY 1,2
+)
+SELECT time_of_day,coffee_name,Total_Revenue FROM (
+SELECT *,
+DENSE_RANK() OVER(PARTITION BY time_of_day ORDER BY total_revenue DESC) ranking
+FROM revenue ) Summary
+WHERE ranking <=2;
+
+
+-- 12. Create a report showing the daily revenue alongside a cumulative (running) total of revenue over time.
+
+WITH revenue AS (
+SELECT Date,ROUND(sum(money),2) Weekly_Revenue
+FROM coffee_sales
+GROUP By 1
+)
+SELECT *,
+ROUND(sum(Weekly_Revenue) OVER(ROWS BETWEEN UNBOUNDED 
+							PRECEDING AND CURRENT ROW),2) Running_Total
+FROM revenue;
+
+-- 13. Calculate the percentage contribution of each coffee type to the total overall revenue of the shop.
+
+WITH coffee_revenue AS (
+						SELECT coffee_name,ROUND(SUM(money),2) Total_Revenue
+						FROM coffee_sales
+						GROUP BY 1
+						)
+SELECT *,
+SUM(Total_Revenue) OVER() Overall_Revenue,
+ROUND(Total_Revenue /
+					SUM(Total_Revenue) OVER() * 100,2) pct_contri_by_coffee
+FROM coffee_revenue;
+
+-- 14. Determine the MOM growth percentage in total sales revenue for each Month.
+
+WITH monthly_sales AS (
+						SELECT month_name,
+						ROUND(SUM(money),2) Total_Revenue
+						FROM coffee_sales
+						GROUP BY 1
+						)
+SELECT *,
+LAG(Total_revenue) OVER() Previous_revenue,
+ROUND( ( Total_Revenue - LAG(Total_revenue) OVER() ) 
+				/ LAG(Total_revenue) OVER()*100,2) Growth_Percentage 
+FROM monthly_sales;
+
+-- 15. Calculate each month's total sales, calculate the average of all monthly totals, and find the months whose sales are above that average.
+
+WITH monthly_sales AS (
+						SELECT month_name,
+						ROUND(SUM(money),2) Total_Sales
+						FROM coffee_sales
+						GROUP BY 1
+						),
+Overall AS 				(
+						SELECT *,
+						ROUND(AVG(total_sales) OVER(),2) Avg_Sales
+						FROM monthly_sales
+						)
+SELECT * 
+FROM overall
+WHERE Total_Sales >= Avg_Sales;
+
 
 
 
